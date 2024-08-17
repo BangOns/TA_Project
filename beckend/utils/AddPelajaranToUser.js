@@ -9,6 +9,7 @@ async function AddPelajaranToUser(id) {
         {
           $push: {
             data_pelajaran: {
+              _id: pelajaran._id,
               name: pelajaran.name,
               nilai: 0,
               kehadiran: 0,

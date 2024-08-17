@@ -3,8 +3,8 @@ const {
   CreateUser,
   GetUserById,
   DeleteUserById,
-  LoginUserOrAdminById,
   UpdateUserNotDataPelajaran,
+  LoginUserOrAdminByNPM,
 } = require("../controller/UserController");
 
 const { cookiesAuthJwt } = require("../utils/cookies");
@@ -23,10 +23,10 @@ const approuter = require("express").Router();
 
 approuter.get("/users", cookiesAuthJwt, GetUsersAll);
 approuter.post("/users", ValidateCreateUser(), CreateUser);
-approuter.post("/login", ValidateUserLogin(), LoginUserOrAdminById);
+approuter.post("/login", ValidateUserLogin(), LoginUserOrAdminByNPM);
 approuter.get("/users/:id", cookiesAuthJwt, GetUserById);
 approuter.delete("/users/:id", DeleteUserById);
-approuter.put("/users/:id", ValidateUpdateUser(), UpdateUserNotDataPelajaran);
+approuter.put("/users/:npm", ValidateUpdateUser(), UpdateUserNotDataPelajaran);
 // Table_Pelajaran
 approuter.post("/pelajaran", ValidatePelajaran(), AddPelajaran);
 approuter.put("/pelajaran/:npm/:pelajaran", UpdateUserDataPelajaran);

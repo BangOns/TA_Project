@@ -15,6 +15,7 @@ async function AddPelajaran(req, res) {
       {
         $push: {
           data_pelajaran: {
+            _id: createNewPelajaran._id,
             name: createNewPelajaran.name,
             nilai: 0,
             kehadiran: 0,
@@ -41,7 +42,7 @@ async function DeletePelajaran(req, res) {
       }
     );
     const getUpdateUser = await User.find();
-    const response = await List_pelajaran.deleteOne({ name: name });
+    await List_pelajaran.deleteOne({ name: name });
     Response(200, getUpdateUser, "success delete pelajaran by name", res);
   } catch (error) {
     Response(400, error, "failed delete user by id", res);

@@ -1,5 +1,5 @@
-const { Admin, User, List_pelajaran } = require("../schema/SchemaDB");
-const { body, validationResult } = require("express-validator");
+const { User } = require("../schema/SchemaDB");
+const { validationResult } = require("express-validator");
 const Response = require("../schema/SchemaResponse");
 const jwt = require("jsonwebtoken");
 const AddPelajaranToUser = require("../utils/AddPelajaranToUser");
@@ -38,7 +38,7 @@ async function GetUserById(req, res) {
     Response(400, error, "failed get user by id", res);
   }
 }
-async function LoginUserOrAdminById(req, res) {
+async function LoginUserOrAdminByNPM(req, res) {
   try {
     const validateAndresult = validationResult(req);
     if (!validateAndresult.isEmpty()) {
@@ -74,7 +74,7 @@ async function UpdateUserNotDataPelajaran(req, res) {
     } else {
       const { name, npm, password, role } = req.body;
       await User.findOneAndUpdate(
-        { npm: req.params.id },
+        { npm: req.params.npm },
         {
           $set: {
             name,
@@ -97,6 +97,6 @@ module.exports = {
   CreateUser,
   GetUserById,
   DeleteUserById,
-  LoginUserOrAdminById,
+  LoginUserOrAdminByNPM,
   UpdateUserNotDataPelajaran,
 };
