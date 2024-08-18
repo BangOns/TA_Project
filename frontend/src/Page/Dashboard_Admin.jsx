@@ -8,17 +8,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { TrendingUp } from "lucide-react";
 import IconsImport from "@/utils/IconsImport";
 
-import React from "react";
+import React, { Suspense } from "react";
 import Card_Dashboard from "@/Mycomponents/Dashboard_Admin/Card_Dashboard";
 import Chart_Dashboard from "@/Mycomponents/Dashboard_Admin/Chart_Dashboard";
 
 export default function Dashboard_Admin() {
   return (
     <>
-      <section className="w-full flex max-lg:flex-col max-lg:gap-3 justify-between">
+      {/* <section className="w-full flex max-lg:flex-col max-lg:gap-3 justify-between">
         <DatePickerWithRange />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -35,17 +34,17 @@ export default function Dashboard_Admin() {
             <DropdownMenuItem>Subscription</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </section>
+      </section> */}
       <article className="w-full grid grid-cols-1 lg:grid-cols-2  xl:grid-cols-3 place-content-stretch gap-[35px] mt-[45px]">
+        <Suspense>
+          <Card_Dashboard
+            title={"Total Mahasiswa"}
+            icons={IconsImport.TotalStudent}
+            persentation={"8,5%"}
+          />
+        </Suspense>
         <Card_Dashboard
-          title={"Total Student"}
-          range={"512"}
-          icons={IconsImport.TotalStudent}
-          persentation={"8,5%"}
-        />
-        <Card_Dashboard
-          title={"Total Certified Students "}
-          range={"489"}
+          title={"Total Pelajaran"}
           icons={IconsImport.Certified}
           persentation={"8,5%"}
         />

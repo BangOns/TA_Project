@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -7,7 +7,57 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
-export default function Card_Dashboard({ title, icons, range, persentation }) {
+import Cookies from "js-cookie";
+import { instance } from "@/axios/axios";
+
+async function getDataMahasiswa(token) {
+  try {
+    const response = await instance.get("/users", {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    return error.response.data;
+  }
+}
+async function getDataPelajaran(token) {
+  try {
+    const response = await instance.get("/pelajaran", {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    return error.response;
+  }
+}
+export default function Card_Dashboard({ title, icons, persentation }) {
+  const [data, dataSet] = useState([]);
+  const cookies = Cookies.get("token");
+  async function ChooseCard(title) {
+    if (title === "Total Mahasiswa") {
+      const response = await getDataMahasiswa(cookies);
+
+      dataSet(response.data);
+    } else if (title === "Total Pelajaran") {
+      const response = await getDataPelajaran(cookies);
+      dataSet(response.data);
+    } else {
+      const response = {
+        data: [],
+      };
+      dataSet(response.data);
+    }
+  }
+
+  useEffect(() => {
+    ChooseCard(title);
+  }, [title, cookies]);
   return (
     <section className="w-full">
       <Card>
@@ -16,7 +66,9 @@ export default function Card_Dashboard({ title, icons, range, persentation }) {
           <img src={icons} alt="" className="mt-0 w-5 h-5 sm:w-10 sm:h-10" />
         </CardHeader>
         <CardContent>
-          <p className="font-semibold text-base sm:text-2xl">{range}</p>
+          <p className="font-semibold text-base sm:text-2xl">
+            {data.length || 0}
+          </p>
         </CardContent>
         <CardFooter>
           <TrendingUp color="#00B69B" className="pr-2" />

@@ -17,7 +17,12 @@ const user = new Schema({
   role: String,
   data_pelajaran: [RekapNilaipelajaran],
 });
-
+user.pre("save", function (next) {
+  if (this.role === "admin") {
+    this.data_pelajaran = undefined;
+  }
+  next();
+});
 const admin = new Schema({
   name: String,
   npm: String,

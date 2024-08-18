@@ -18,18 +18,24 @@ const {
   AddPelajaran,
   DeletePelajaran,
   UpdateUserDataPelajaran,
+  GetPelajaran,
 } = require("../controller/PelajaranController");
 const approuter = require("express").Router();
 
-approuter.get("/users", cookiesAuthJwt, GetUsersAll);
-approuter.post("/users", ValidateCreateUser(), CreateUser);
-approuter.post("/login", ValidateUserLogin(), LoginUserOrAdminByNPM);
-approuter.get("/users/:id", cookiesAuthJwt, GetUserById);
-approuter.delete("/users/:id", DeleteUserById);
-approuter.put("/users/:npm", ValidateUpdateUser(), UpdateUserNotDataPelajaran);
+approuter.get("/api/users", cookiesAuthJwt, GetUsersAll);
+approuter.post("/api/users", ValidateCreateUser(), CreateUser);
+approuter.post("/api/login", ValidateUserLogin(), LoginUserOrAdminByNPM);
+approuter.get("/api/users/:id", cookiesAuthJwt, GetUserById);
+approuter.delete("/api/users/:id", DeleteUserById);
+approuter.put(
+  "/api/users/:npm",
+  ValidateUpdateUser(),
+  UpdateUserNotDataPelajaran
+);
 // Table_Pelajaran
-approuter.post("/pelajaran", ValidatePelajaran(), AddPelajaran);
-approuter.put("/pelajaran/:npm/:pelajaran", UpdateUserDataPelajaran);
-approuter.delete("/pelajaran/:name", DeletePelajaran);
+approuter.get("/api/pelajaran", cookiesAuthJwt, GetPelajaran);
+approuter.post("/api/pelajaran", ValidatePelajaran(), AddPelajaran);
+approuter.put("/api/pelajaran/:npm/:pelajaran", UpdateUserDataPelajaran);
+approuter.delete("/api/pelajaran/:name", DeletePelajaran);
 
 module.exports = approuter;

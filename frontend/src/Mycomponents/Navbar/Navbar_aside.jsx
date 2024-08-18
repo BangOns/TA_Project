@@ -25,9 +25,9 @@ export default function Navbar_aside() {
             <ul className="mt-[15px]">
               <li>
                 <Link
-                  to={"/"}
+                  to={"/admin"}
                   className={`  ${
-                    pathname === "/" && "bg-red-500 text-white"
+                    pathname === "/admin" && "bg-red-500 text-white"
                   } flex items-center max-sm:justify-center gap-[10px] sm:w-full py-2 sm:px-[15px] hover:bg-red-500 hover:text-white text-slate-400 rounded mb-[6px]`}
                 >
                   <img

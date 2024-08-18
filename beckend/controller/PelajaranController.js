@@ -2,6 +2,15 @@ const { validationResult } = require("express-validator");
 const { List_pelajaran, User } = require("../schema/SchemaDB");
 const Response = require("../schema/SchemaResponse");
 
+async function GetPelajaran(req, res) {
+  try {
+    const pelajaran = await List_pelajaran.find();
+    Response(200, pelajaran, "success get all pelajaran", res);
+  } catch (error) {
+    Response(400, error, "failed get all pelajaran", res);
+  }
+}
+
 async function AddPelajaran(req, res) {
   try {
     const resultValidate = validationResult(req);
@@ -79,4 +88,9 @@ async function UpdateUserDataPelajaran(req, res) {
   }
 }
 
-module.exports = { AddPelajaran, DeletePelajaran, UpdateUserDataPelajaran };
+module.exports = {
+  GetPelajaran,
+  AddPelajaran,
+  DeletePelajaran,
+  UpdateUserDataPelajaran,
+};

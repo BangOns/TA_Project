@@ -17,12 +17,18 @@ async function CreateUser(req, res) {
     if (!resultValidate.isEmpty()) {
       return Response(400, resultValidate, "failed create user", res);
     } else {
-      const newUser = req.body;
+      var newUser;
+      if (req.body.npm.startsWith("111")) {
+        newUser = { ...req.body, role: "admin" };
+      } else {
+        newUser = { ...req.body, role: "user" };
+      }
       const getNewUser = await User.create(newUser);
-      const responseAddPelajaranToNewUser = await AddPelajaranToUser(
-        getNewUser._id
-      );
-      Response(200, responseAddPelajaranToNewUser, "success create user", res);
+      const responseNewUser =
+        getNewUser.role === "user"
+          ? await AddPelajaranToUser(getNewUser._id)
+          : getNewUser;
+      Response(200, responseNewUser, "success create user", res);
     }
   } catch (error) {
     Response(400, error, "failed create user", res);
@@ -46,10 +52,7 @@ async function LoginUserOrAdminByNPM(req, res) {
     } else {
       const npmValue = req.body.npm;
       const user = await User.findOne({ npm: npmValue });
-      const expiredsIn = 60 * 60 * 3;
-      const token = jwt.sign(user.toJSON(), process.env.JWT_SECRET, {
-        expiresIn: expiredsIn,
-      });
+      const token = jwt.sign(user.toJSON(), process.env.JWT_SECRET);
       Response(200, user, "success get user by id", res, token);
     }
   } catch (error) {
