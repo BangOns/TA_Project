@@ -8,43 +8,16 @@ import {
 } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
 import Cookies from "js-cookie";
-import { instance } from "@/axios/axios";
+import { getDataMahasiswa, getDataPelajaran } from "@/utils/GetData";
 
-async function getDataMahasiswa(token) {
-  try {
-    const response = await instance.get("/users", {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    return error.response.data;
-  }
-}
-async function getDataPelajaran(token) {
-  try {
-    const response = await instance.get("/pelajaran", {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    return error.response;
-  }
-}
 export default function Card_Dashboard({ title, icons, persentation }) {
   const [data, dataSet] = useState([]);
   const cookies = Cookies.get("token");
   async function ChooseCard(title) {
-    if (title === "Total Mahasiswa") {
+    if (title.includes("Mahasiswa")) {
       const response = await getDataMahasiswa(cookies);
-
-      dataSet(response.data);
-    } else if (title === "Total Pelajaran") {
+      dataSet(response);
+    } else if (title.includes("Pelajaran")) {
       const response = await getDataPelajaran(cookies);
       dataSet(response.data);
     } else {

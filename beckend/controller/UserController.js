@@ -6,6 +6,7 @@ const AddPelajaranToUser = require("../utils/AddPelajaranToUser");
 async function GetUsersAll(req, res) {
   try {
     const users = await User.find();
+
     Response(200, users, "success get all users", res);
   } catch (error) {
     Response(400, error, "failed get all users", res);
