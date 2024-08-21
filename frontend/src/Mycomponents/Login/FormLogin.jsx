@@ -6,7 +6,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -22,9 +21,8 @@ const formSchema = z.object({
   }),
   password: z.string().min(1, { message: "Please enter a valid password." }),
 });
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
 export default function FormLogin() {
   const [messageError, messageErrorSet] = useState("");
   const navigate = useNavigate();

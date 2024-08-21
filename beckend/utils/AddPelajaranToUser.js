@@ -13,6 +13,7 @@ async function AddPelajaranToUser(id) {
               name: pelajaran.name,
               nilai: 0,
               kehadiran: 0,
+              Total_nilai: 0,
             },
           },
         }

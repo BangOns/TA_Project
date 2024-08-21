@@ -76,23 +76,20 @@ async function UpdateUserNotDataPelajaran(req, res) {
     if (!validateAndresult.isEmpty()) {
       return Response(400, validateAndresult, "failed update user by id", res);
     } else {
-      const { name, npm, password, role } = req.body;
+      const data = req.body;
       await User.findOneAndUpdate(
-        { npm: req.params.npm },
+        { _id: req.params.id },
         {
           $set: {
-            name,
-            npm,
-            password,
-            role,
+            ...data,
           },
         }
       );
     }
-    const response = await User.findOne({ npm: req.body.npm });
-    Response(200, response, "success delete user by npm", res);
+    const response = await User.findOne({ _id: req.params.id });
+    Response(200, response, "success update user by id", res);
   } catch (error) {
-    Response(400, error, "failed update user by npm", res);
+    Response(400, error, "failed update user by id", res);
   }
 }
 

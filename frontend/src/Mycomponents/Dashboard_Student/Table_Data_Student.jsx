@@ -18,12 +18,33 @@ import {
 } from "@/components/ui/pagination";
 
 import ImagesImport from "@/utils/ImagesImport";
-import ListHeadTable from "@/utils/List_Head_Table";
-import { ArrowDownUp, Trash2 } from "lucide-react";
-import Button_Edit_Student from "./Button_Edit_Student";
-import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
-export default function Table_Data_Student({ dataUsers, dataUsersSet }) {
+import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import Cookies from "js-cookie";
+import { getDataMahasiswa, getDataPelajaran } from "@/utils/GetData";
+import Button_Dropdown_Edit from "./Button_Dropdown_Edit";
+import Thead_List_Pelajaran from "./Child_Component/List_Pelajaran";
+import TableCell_List_Nilai_Mahasiswa from "./Child_Component/List_Nilai_Mahasiswa";
+
+export default function Table_Data_Student() {
+  const cookies = Cookies.get("token");
+
+  const { data: theadPelajaran, isLoading } = useQuery({
+    queryKey: ["tablepelajaran"],
+    queryFn: async () => getDataPelajaran(cookies),
+    select: (data) => {
+      return data.data.sort((pelajaranA, pelajaranB) =>
+        pelajaranA.name.localeCompare(pelajaranB.name)
+      );
+    },
+  });
+  const { data: dataMahasiswa, isLoading: loadingUser } = useQuery({
+    queryKey: ["tablemahasiswa"],
+    queryFn: async () => getDataMahasiswa(cookies),
+  });
+
   return (
     <Table>
       <TableCaption>
@@ -67,20 +88,19 @@ export default function Table_Data_Student({ dataUsers, dataUsersSet }) {
       <TableHeader>
         <TableRow className="bg-slate-300 text-white">
           <TableHead className="font-semibold">Profil</TableHead>
-          {ListHeadTable.map((item, index) => (
-            <TableHead className="font-semibold  ">
-              <div className="flex gap-3 items-center text-center ">
-                <p className="text-sm"> {item}</p>
-                <ArrowDownUp width={16} height={16} role="button" />
-              </div>
-            </TableHead>
-          ))}
+          <TableHead className="font-semibold">Name</TableHead>
+          <TableHead className="font-semibold">NPM</TableHead>
+          {!isLoading &&
+            theadPelajaran &&
+            theadPelajaran.map((item, index) => (
+              <Thead_List_Pelajaran key={index} item={item} />
+            ))}
           <TableHead className="font-semibold text-center">Action</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {dataUsers ? (
-          dataUsers.map((user, index) => (
+        {!loadingUser && dataMahasiswa ? (
+          dataMahasiswa.map((user, index) => (
             <TableRow key={index}>
               <TableCell>
                 <figure>
@@ -92,30 +112,18 @@ export default function Table_Data_Student({ dataUsers, dataUsersSet }) {
                 </figure>
               </TableCell>
               <TableCell>
-                <p className="text-sm font-bold">{user.fullname}</p>
+                <p className="text-sm font-bold">{user.name}</p>
               </TableCell>
               <TableCell>
-                <p className="text-sm font-bold">{user.email}</p>
+                <p className="text-sm font-bold">{user.npm}</p>
               </TableCell>
-              <TableCell>
-                <p className="text-sm font-bold">{user.phoneNumber} </p>
-              </TableCell>
-              <TableCell>
-                <p className="text-sm font-bold">{user.instance} </p>
-              </TableCell>
-              <TableCell>
-                <p className="text-sm font-bold">{user.createdAt} </p>
-              </TableCell>
+              <TableCell_List_Nilai_Mahasiswa user={user} />
               <TableCell>
                 <div className="flex justify-center">
                   <Button
                     className="bg-transparent  group hover:bg-red-500 "
                     size="sm"
-                    onClick={() =>
-                      dataUsersSet(
-                        dataUsers.filter((item) => item.id !== user.id)
-                      )
-                    }
+                    onClick={() => {}}
                   >
                     <Trash2
                       role="button"
@@ -124,17 +132,17 @@ export default function Table_Data_Student({ dataUsers, dataUsersSet }) {
                       height={20}
                     />
                   </Button>
-                  <Button_Edit_Student
-                    dataUserById={user}
-                    DataUsers={dataUsers}
-                    DataUsersSet={dataUsersSet}
-                  />
+                  <Button_Dropdown_Edit id={user._id} />
                 </div>
               </TableCell>
             </TableRow>
           ))
         ) : (
-          <></>
+          <TableRow>
+            <TableCell>...</TableCell>
+            <TableCell>...</TableCell>
+            <TableCell>...</TableCell>
+          </TableRow>
         )}
       </TableBody>
     </Table>

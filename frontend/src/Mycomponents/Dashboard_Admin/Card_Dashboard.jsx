@@ -14,17 +14,21 @@ export default function Card_Dashboard({ title, icons, persentation }) {
   const [data, dataSet] = useState([]);
   const cookies = Cookies.get("token");
   async function ChooseCard(title) {
-    if (title.includes("Mahasiswa")) {
-      const response = await getDataMahasiswa(cookies);
-      dataSet(response);
-    } else if (title.includes("Pelajaran")) {
-      const response = await getDataPelajaran(cookies);
-      dataSet(response.data);
-    } else {
-      const response = {
-        data: [],
-      };
-      dataSet(response.data);
+    try {
+      if (title.includes("Mahasiswa")) {
+        const response = await getDataMahasiswa(cookies);
+        dataSet(response);
+      } else if (title.includes("Pelajaran")) {
+        const response = await getDataPelajaran(cookies);
+        dataSet(response.data);
+      } else {
+        const response = {
+          data: [],
+        };
+        dataSet(response.data);
+      }
+    } catch (error) {
+      dataSet(error.response.data);
     }
   }
 

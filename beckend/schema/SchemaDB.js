@@ -8,6 +8,7 @@ const RekapNilaipelajaran = new Schema({
   name: String,
   nilai: Number,
   kehadiran: Number,
+  Total_nilai: Number,
 });
 
 const user = new Schema({

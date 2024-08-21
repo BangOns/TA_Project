@@ -1,10 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import {
   Select,
   SelectContent,
@@ -21,7 +16,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { ListFilter } from "lucide-react";
 import React from "react";
-import { Label } from "@/components/ui/label";
 
 export default function Filter_Student() {
   return (

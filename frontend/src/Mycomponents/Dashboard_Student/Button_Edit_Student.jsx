@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import validator from "validator";
 import {
   Dialog,
   DialogContent,
@@ -10,118 +9,115 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Pencil, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import DataUser from "@/utils/DataUser";
-import Instances from "@/utils/DataInstance";
+
+import Cookies from "js-cookie";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getDataMahasiswaById } from "@/utils/GetData";
+import { EditDataMahasiswa } from "@/utils/PostData";
 const formSchema = z.object({
-  fullname: z.string().min(2, {
+  name: z.string().min(2, {
     message: "fullname must be at least 2 characters.",
   }),
-  email: z
+  npm: z
     .string()
-    .min(2, {
-      message: "fullname must be at least 2 characters.",
+    .min(12, {
+      message: "fullname must be at least 12 characters.",
     })
-    .email({ message: "Please enter a valid email address." }),
-  phoneNumber: z
-    .string()
-    .refine(validator.isMobilePhone, "Please enter a valid phone number.")
-    .optional(),
-  instance: z.string().nonempty("Please enter a valid instance."),
-  password: z.string({
+    .max(12, {
+      message: "fullname must be at least 12 characters.",
+    }),
+
+  oldPassword: z.string({
     message: "Please enter a valid password.",
   }),
-  rePassword: z
+  newPassword: z
     .string({
       message: "Please enter a valid password.",
     })
     .optional(),
 });
-export default function Button_Edit_Student({
-  dataUserById,
-  DataUsers,
-  DataUsersSet,
-}) {
+export default function Button_Edit_Student({ dataUserById }) {
   const [open, openSet] = useState(false);
+  const [messageError, messageErrorSet] = useState("");
+  const queryClient = useQueryClient();
+  const cookies = Cookies.get("token");
+  const { data } = useQuery({
+    queryKey: ["mahasiswa"],
+    queryFn: async () => await getDataMahasiswaById(dataUserById, cookies),
+  });
+  const mutation = useMutation({
+    mutationFn: EditDataMahasiswa,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tablemahasiswa"] });
+      openSet(false);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullname: "",
-      email: "",
-      phoneNumber: "",
-      instance: "",
-      password: "",
-      rePassword: "",
+      name: "",
+      npm: "",
+      oldPassword: "",
+      newPassword: "",
     },
   });
-  function onSubmit(values) {
-    if (values.rePassword === values.password) {
-      const createdAt = new Date().toLocaleDateString("id-ID", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-      const updateUser = {
-        fullname: values.fullname,
-        email: values.email,
-        phoneNumber: values.phoneNumber,
-        instance: values.instance,
-        password: values.password,
-        createdAt,
-        id: dataUserById.id,
+
+  async function onSubmit(values) {
+    let newDataMahasiswa = null;
+    const olderPassword = await data.data.data.password;
+    const idUser = await data.data.data._id;
+    if (values.oldPassword !== olderPassword) {
+      messageErrorSet("Password lama salah");
+    } else if (
+      values.newPassword.length !== 0 ||
+      values.oldPassword === olderPassword
+    ) {
+      newDataMahasiswa = {
+        id: idUser,
+        name: values.name,
+        npm: values.npm,
+        password: values.newPassword || olderPassword,
       };
-      DataUsersSet(
-        DataUsers.map((user) =>
-          user.id === dataUserById.id ? updateUser : user
-        )
-      );
-      openSet(false);
+      mutation.mutate(newDataMahasiswa);
     } else {
-      openSet(true);
-      alert("Password doesn't match");
+      messageErrorSet("Password lama salah");
+    }
+  }
+  async function GetValueEditMahasiswa(data) {
+    if (data) {
+      const getDataPelajaranById = await data.data.data;
+      form.setValue("name", getDataPelajaranById.name);
+      form.setValue("npm", getDataPelajaranById.npm);
+      form.setValue("oldPassword", getDataPelajaranById.password);
     }
   }
   useEffect(() => {
-    form.setValue("fullname", dataUserById.fullname);
-    form.setValue("email", dataUserById.email);
-    form.setValue("phoneNumber", dataUserById.phoneNumber);
-    form.setValue("instance", dataUserById.instance);
-    form.setValue("password", dataUserById.password);
-    form.setValue("rePassword", dataUserById.password);
-  }, []);
+    GetValueEditMahasiswa(data);
+  }, [data]);
   return (
     <Dialog open={open} onOpenChange={openSet}>
       <DialogTrigger asChild>
-        <Button className="bg-transparent group hover:bg-orange-500" size="sm">
-          <Pencil
-            role="button"
-            className=" w-5 h-5 text-orange-400 group-hover:text-white"
-          />
+        <Button className="bg-transparent group hover:bg-amber-500 w-full text-black justify-start hover:text-white py-0">
+          Edit Profile
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader className={"border-b-[1px] pb-[14px]  border-slate-200"}>
-          <DialogTitle className="px-6">Add New Student</DialogTitle>
+          <DialogTitle className="px-6">Edit Profile Student</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -131,29 +127,30 @@ export default function Button_Edit_Student({
             <div className="flex gap-6 ">
               <FormField
                 control={form.control}
-                name="fullname"
+                name="name"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>fullname</FormLabel>
+                    <FormLabel>Name</FormLabel>
                     <FormControl>
                       <Input placeholder="Jhon" {...field} />
                     </FormControl>
-
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <FormField
                 control={form.control}
-                name="email"
+                name="npm"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>email</FormLabel>
+                    <FormLabel>NPM</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="jhondoe@gmail.com"
                         {...field}
-                        type="email"
+                        disabled={
+                          data.data.data.npm.length >= 12 ? true : false
+                        }
                       />
                     </FormControl>
                     <FormMessage />
@@ -161,62 +158,14 @@ export default function Button_Edit_Student({
                 )}
               />
             </div>
-            <div className="flex  gap-6">
-              <FormField
-                control={form.control}
-                name="phoneNumber"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Phone Number</FormLabel>
-                    <FormControl>
-                      <Input placeholder="+62 0987324968" {...field} />
-                    </FormControl>
 
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="instance"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Instance</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="w-12"
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder="Instance"
-                            defaultValue={field.value}
-                            onChange={field.onChange}
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {Instances.map((item, i) => (
-                          <SelectItem key={i} value={item}>
-                            {item}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
             <div className="flex gap-6 ">
               <FormField
                 control={form.control}
-                name="password"
+                name="oldPassword"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>password</FormLabel>
+                    <FormLabel>Old Password</FormLabel>
                     <FormControl>
                       <Input placeholder="****" {...field} type="password" />
                     </FormControl>
@@ -227,10 +176,10 @@ export default function Button_Edit_Student({
               />
               <FormField
                 control={form.control}
-                name="rePassword"
+                name="newPassword"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>Re-Password</FormLabel>
+                    <FormLabel>New Password</FormLabel>
                     <FormControl>
                       <Input placeholder="*****" {...field} type="password" />
                     </FormControl>
@@ -239,6 +188,7 @@ export default function Button_Edit_Student({
                 )}
               />
             </div>
+            {messageError && <p>{messageError}</p>}
             <div className="flex justify-end">
               <Button
                 type="submit"

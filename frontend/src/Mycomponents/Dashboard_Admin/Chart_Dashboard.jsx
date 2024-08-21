@@ -1,4 +1,4 @@
-import { getDataMahasiswa, getDataToCharts } from "@/utils/GetData";
+import { getDataToCharts } from "@/utils/GetData";
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";

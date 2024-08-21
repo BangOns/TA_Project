@@ -1,5 +1,20 @@
 import { instance } from "@/axios/axios";
 
+export async function CheckCookiesValid(token) {
+  try {
+    const response = await instance.get("/users", {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response;
+  } catch (error) {
+    return error;
+  }
+}
+
 export async function getDataMahasiswa(token) {
   try {
     const response = await instance.get("/users", {
@@ -16,6 +31,19 @@ export async function getDataMahasiswa(token) {
     return FilterUserMahasiswa;
   } catch (error) {
     return error.response.data;
+  }
+}
+export async function getDataMahasiswaById(id, token) {
+  try {
+    const response = await instance.get(`/users/${id}`, {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error.response;
   }
 }
 export async function getDataPelajaran(token) {

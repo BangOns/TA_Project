@@ -20,7 +20,7 @@ async function AddPelajaran(req, res) {
     }
     const createNewPelajaran = await List_pelajaran.create(req.body);
     await User.updateMany(
-      {},
+      { role: "user" },
       {
         $push: {
           data_pelajaran: {
@@ -28,6 +28,7 @@ async function AddPelajaran(req, res) {
             name: createNewPelajaran.name,
             nilai: 0,
             kehadiran: 0,
+            Total_nilai: 0,
           },
         },
       }
@@ -59,19 +60,26 @@ async function DeletePelajaran(req, res) {
 }
 
 async function UpdateUserDataPelajaran(req, res) {
+  const NilaiAvarage = 100;
+  const MaxKehadiran = 16;
   try {
-    const { npm, pelajaran } = req.params;
+    const { npm, idpelajaran } = req.params;
     const { nilai, kehadiran } = req.body;
-
+    const persentaseNilai_Kehadiran = (kehadiran / MaxKehadiran) * NilaiAvarage;
+    const Hasil_RataRata = (nilai + persentaseNilai_Kehadiran) / 2;
+    const formatted_Hasil_RataRata = Number.isInteger(Hasil_RataRata)
+      ? Hasil_RataRata.toString()
+      : Hasil_RataRata.toFixed(2);
     await User.updateOne(
       {
         npm: npm,
-        "data_pelajaran.name": pelajaran,
+        "data_pelajaran._id": idpelajaran,
       },
       {
         $set: {
           "data_pelajaran.$.nilai": nilai,
           "data_pelajaran.$.kehadiran": kehadiran,
+          "data_pelajaran.$.Total_nilai": formatted_Hasil_RataRata,
         },
       },
       {
@@ -80,7 +88,7 @@ async function UpdateUserDataPelajaran(req, res) {
     );
     const response = await User.findOne({
       npm: npm,
-      "data_pelajaran.name": pelajaran,
+      "data_pelajaran._id": idpelajaran,
     }).exec();
     Response(200, response, "Success update pelajaran user by name", res);
   } catch (error) {
