@@ -1,5 +1,16 @@
 import { instance } from "@/axios/axios";
 
+export async function AddDataMahasiswa(data) {
+  try {
+    const responseAddMahasiswa = await instance.post("/users", {
+      ...data,
+    });
+    return responseAddMahasiswa;
+  } catch (error) {
+    return error;
+  }
+}
+
 export async function EditDataMahasiswa(data) {
   const { id, ...updateDataMahasiswa } = data;
   try {

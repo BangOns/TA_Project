@@ -46,7 +46,7 @@ export default function FormLogin() {
         navigate("/admin");
       }
     } catch (error) {
-      messageErrorSet(error.response.data.data.errors[0].msg);
+      messageErrorSet(error.response.data.data.errors[0].msg || error);
     }
   }
 

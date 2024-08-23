@@ -19,33 +19,13 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-
 import Cookies from "js-cookie";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getDataMahasiswaById } from "@/utils/GetData";
-import { EditDataMahasiswa } from "@/utils/PostData";
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "fullname must be at least 2 characters.",
-  }),
-  npm: z
-    .string()
-    .min(12, {
-      message: "fullname must be at least 12 characters.",
-    })
-    .max(12, {
-      message: "fullname must be at least 12 characters.",
-    }),
-
-  oldPassword: z.string({
-    message: "Please enter a valid password.",
-  }),
-  newPassword: z
-    .string({
-      message: "Please enter a valid password.",
-    })
-    .optional(),
-});
+import { EditDataMahasiswa } from "@/utils/Post_And_Put_Data";
+import { toast } from "react-toastify";
+import { SchemaFormEditUser } from "@/helper/SchemaZod";
+const formSchema = SchemaFormEditUser;
 export default function Button_Edit_Student({ dataUserById }) {
   const [open, openSet] = useState(false);
   const [messageError, messageErrorSet] = useState("");
@@ -59,10 +39,16 @@ export default function Button_Edit_Student({ dataUserById }) {
     mutationFn: EditDataMahasiswa,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tablemahasiswa"] });
+      toast.success("Edit Student is Succcess ", {
+        autoClose: 3000,
+      });
       openSet(false);
     },
-    onError: (error) => {
-      console.log(error);
+    onError: () => {
+      toast.error("Add Student is failed ", {
+        autoClose: 3000,
+      });
+      openSet(false);
     },
   });
 
@@ -188,7 +174,9 @@ export default function Button_Edit_Student({ dataUserById }) {
                 )}
               />
             </div>
-            {messageError && <p>{messageError}</p>}
+            {messageError && (
+              <p className="text-red-500 text-sm">{messageError}</p>
+            )}
             <div className="flex justify-end">
               <Button
                 type="submit"

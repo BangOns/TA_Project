@@ -18,19 +18,17 @@ import {
 } from "@/components/ui/pagination";
 
 import ImagesImport from "@/utils/ImagesImport";
-import { Trash2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
-import { getDataMahasiswa, getDataPelajaran } from "@/utils/GetData";
-import Button_Dropdown_Edit from "./Button_Dropdown_Edit";
-import Thead_List_Pelajaran from "./Child_Component/List_Pelajaran";
-import TableCell_List_Nilai_Mahasiswa from "./Child_Component/List_Nilai_Mahasiswa";
+import { getDataPelajaran } from "@/utils/GetData";
+import Button_Dropdown_Edit from "./Child_Component_Table/Button_Dropdown_Edit";
+import Thead_List_Pelajaran from "./Child_Component_Table/List_Pelajaran";
+import TableCell_List_Nilai_Mahasiswa from "./Child_Component_Table/List_Nilai_Mahasiswa";
+import Button_Delete_Student from "./Child_Component_Table/Button_Delete_Student";
 
-export default function Table_Data_Student() {
+export default function Table_Data_Student({ dataMahasiswa }) {
   const cookies = Cookies.get("token");
-
   const { data: theadPelajaran, isLoading } = useQuery({
     queryKey: ["tablepelajaran"],
     queryFn: async () => getDataPelajaran(cookies),
@@ -39,10 +37,6 @@ export default function Table_Data_Student() {
         pelajaranA.name.localeCompare(pelajaranB.name)
       );
     },
-  });
-  const { data: dataMahasiswa, isLoading: loadingUser } = useQuery({
-    queryKey: ["tablemahasiswa"],
-    queryFn: async () => getDataMahasiswa(cookies),
   });
 
   return (
@@ -99,7 +93,7 @@ export default function Table_Data_Student() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {!loadingUser && dataMahasiswa ? (
+        {dataMahasiswa.length !== 0 ? (
           dataMahasiswa.map((user, index) => (
             <TableRow key={index}>
               <TableCell>
@@ -120,18 +114,7 @@ export default function Table_Data_Student() {
               <TableCell_List_Nilai_Mahasiswa user={user} />
               <TableCell>
                 <div className="flex justify-center">
-                  <Button
-                    className="bg-transparent  group hover:bg-red-500 "
-                    size="sm"
-                    onClick={() => {}}
-                  >
-                    <Trash2
-                      role="button"
-                      className=" w-5 h-5 text-red-500 group-hover:text-white"
-                      width={20}
-                      height={20}
-                    />
-                  </Button>
+                  <Button_Delete_Student id={user._id} />
                   <Button_Dropdown_Edit id={user._id} />
                 </div>
               </TableCell>

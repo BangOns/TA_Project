@@ -5,6 +5,7 @@ const {
   DeleteUserById,
   UpdateUserNotDataPelajaran,
   LoginUserOrAdminByNPM,
+  Logout,
 } = require("../controller/UserController");
 
 const { cookiesAuthJwt } = require("../utils/cookies");
@@ -12,7 +13,7 @@ const {
   ValidateUserLogin,
   ValidateCreateUser,
   ValidateUpdateUser,
-} = require("../utils/ValidateNpmUser");
+} = require("../utils/ValidateUser");
 const { ValidatePelajaran } = require("../utils/ValidatePelajaran");
 const {
   AddPelajaran,
@@ -24,9 +25,10 @@ const approuter = require("express").Router();
 
 approuter.get("/api/users", cookiesAuthJwt, GetUsersAll);
 approuter.post("/api/users", ValidateCreateUser(), CreateUser);
+approuter.delete("/api/logout", Logout);
 approuter.post("/api/login", ValidateUserLogin(), LoginUserOrAdminByNPM);
 approuter.get("/api/users/:id", cookiesAuthJwt, GetUserById);
-approuter.delete("/api/users/:id", DeleteUserById);
+approuter.delete("/api/users/:id", cookiesAuthJwt, DeleteUserById);
 approuter.put(
   "/api/users/:id",
   ValidateUpdateUser(),

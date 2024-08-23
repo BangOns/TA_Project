@@ -1,6 +1,6 @@
 import { TableCell } from "@/components/ui/table";
 import React from "react";
-import Detail_Nilai_In_Table from "../Detail_Nilai_In_Table";
+import Detail_Nilai_In_Table from "./Detail_Nilai_In_Table";
 export default function TableCell_List_Nilai_Mahasiswa({ user }) {
   let ElementListNilai = null;
   if (user.data_pelajaran.length !== 0) {

@@ -30,30 +30,12 @@ import {
 import Cookies from "js-cookie";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getDataMahasiswaById, getDataPelajaran } from "@/utils/GetData";
-import { EditDataNilaiPelajaran } from "@/utils/PostData";
-const formSchema = z.object({
-  nilai: z.coerce
-    .number({
-      message: "Please, input this number",
-    })
-    .min(1, {
-      message: "Input be correctly",
-    }),
-  kehadiran: z.coerce
-    .number({
-      message: "Please, input this number",
-    })
-    .min(1, {
-      message: "Input be correctly",
-    })
-    .lte(16, {
-      message: "Kehadiran tidak boleh lebih dari 16",
-    }),
-  idPelajaran: z.string().nonempty({ message: "Input be correctly" }),
-});
+import { EditDataNilaiPelajaran } from "@/utils/Post_And_Put_Data";
+import { toast } from "react-toastify";
+import { SchemaFormNilai } from "@/helper/SchemaZod";
+const formSchema = SchemaFormNilai;
 export default function Button_Edit_Nilai({ dataUserById }) {
   const [open, openSet] = useState(false);
-  const [messageError, messageErrorSet] = useState("");
   const cookies = Cookies.get("token");
   const queryClient = useQueryClient();
 
@@ -79,10 +61,16 @@ export default function Button_Edit_Nilai({ dataUserById }) {
     mutationFn: EditDataNilaiPelajaran,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tablemahasiswa"] });
+      toast.success("Edit Nilai is Succcess ", {
+        autoClose: 3000,
+      });
       openSet(false);
     },
     onError: (error) => {
-      messageErrorSet(error.message);
+      toast.error("Edit Nilai is Failed ", {
+        autoClose: 3000,
+      });
+      openSet(false);
     },
   });
   async function onSubmit(values) {
@@ -183,7 +171,6 @@ export default function Button_Edit_Nilai({ dataUserById }) {
                 )}
               />
             </div>
-            {messageError && <p>{messageError}</p>}
             <div className="flex justify-end">
               <Button
                 type="submit"

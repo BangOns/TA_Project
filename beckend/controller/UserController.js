@@ -53,13 +53,23 @@ async function LoginUserOrAdminByNPM(req, res) {
     } else {
       const npmValue = req.body.npm;
       const user = await User.findOne({ npm: npmValue });
-      const token = jwt.sign(user.toJSON(), process.env.JWT_SECRET);
+      const dataInToken = {
+        name: user.name,
+        role: user.role,
+      };
+      const token = jwt.sign(dataInToken, process.env.JWT_SECRET);
       Response(200, user, "success get user by id", res, token);
     }
   } catch (error) {
     Response(400, error, "failed tef user by id", res);
   }
 }
+
+async function Logout(req, res) {
+  res.clearCookie("token");
+  Response(200, null, "success logout", res);
+}
+
 async function DeleteUserById(req, res) {
   try {
     const id = req.params.id;
@@ -100,4 +110,5 @@ module.exports = {
   DeleteUserById,
   LoginUserOrAdminByNPM,
   UpdateUserNotDataPelajaran,
+  Logout,
 };

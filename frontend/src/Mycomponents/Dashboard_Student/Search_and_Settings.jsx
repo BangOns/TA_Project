@@ -1,16 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import ListHeadTable from "@/utils/List_Head_Table";
-import { Search, Settings } from "lucide-react";
-import React from "react";
+import { FileSpreadsheet, Search, Settings, Trophy } from "lucide-react";
+import React, { useContext } from "react";
+import { SearchContext } from "../Container_Dashboard";
 
 export default function Search_and_Settings() {
+  const { searchDataSet } = useContext(SearchContext);
   return (
     <>
       <div className="flex  items-center gap-2 bg-white border px-[14px]  rounded-lg">
@@ -18,6 +18,7 @@ export default function Search_and_Settings() {
         <Input
           placeholder="Search"
           className="border-none rounded-none ring-0 outline-none focus:outline-none p-0"
+          onChange={(e) => searchDataSet(e.target.value)}
         />
       </div>
       <Popover>
@@ -34,19 +35,20 @@ export default function Search_and_Settings() {
             />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[182px] right-10">
-          <div className=" px-[9px]">
-            {ListHeadTable.map((item, index) => (
-              <div className="flex py-2 gap-2" key={index}>
-                <Checkbox id={item} />
-                <label
-                  htmlFor={item}
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  {item}
-                </label>
+        <PopoverContent className="w-[182px] px-0 right-10">
+          <div className=" px-0 space-y-2">
+            <Button className="w-full border-0 justify-start" variant="outline">
+              <div className="flex gap-3 justify-start">
+                <FileSpreadsheet width={20} height={20} />
+                <p>Export to excel</p>
               </div>
-            ))}
+            </Button>
+            <Button className="w-full border-0 justify-start" variant="outline">
+              <div className="flex gap-3">
+                <Trophy width={20} height={20} />
+                <p>Peringkat pertama</p>
+              </div>
+            </Button>
           </div>
         </PopoverContent>
       </Popover>

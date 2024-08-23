@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import validator from "validator";
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -22,73 +20,51 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import DataUser from "@/utils/DataUser";
-import Instances from "@/utils/DataInstance";
-const formSchema = z.object({
-  fullname: z.string().min(2, {
-    message: "fullname must be at least 2 characters.",
-  }),
-  email: z
-    .string()
-    .min(2, {
-      message: "fullname must be at least 2 characters.",
-    })
-    .email({ message: "Please enter a valid email address." }),
-  phoneNumber: z
-    .string()
-    .refine(validator.isMobilePhone, "Please enter a valid phone number.")
-    .optional(),
-  instance: z.string().nonempty("Please enter a valid instance."),
-  password: z.string({
-    message: "Please enter a valid password.",
-  }),
-  rePassword: z.string({
-    message: "Please enter a valid password.",
-  }),
-});
-export default function Button_Add_Student({ dataUsersSet, dataUsers }) {
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AddDataMahasiswa } from "@/utils/Post_And_Put_Data";
+import { toast } from "react-toastify";
+import { SchemaFormAddUser } from "@/helper/SchemaZod";
+
+const formSchema = SchemaFormAddUser;
+export default function Button_Add_Student() {
   const [open, openSet] = useState(false);
+  const [messageError, messageErrorSet] = useState("");
+  const queryClient = useQueryClient();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullname: "",
-      email: "",
-      phoneNumber: "",
-      instance: "",
+      name: "",
+      npm: "",
       password: "",
       rePassword: "",
     },
   });
-  function onSubmit(values) {
-    const Program = DataCharts.map((item) => item.nameLabel);
-    if (values.rePassword === values.password) {
-      const createdAt = new Date().toLocaleDateString("id-ID", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
+  const mutation = useMutation({
+    mutationFn: AddDataMahasiswa,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tablemahasiswa"] });
+      toast.success("Add Student is success ", {
+        autoClose: 3000,
       });
-      const newUser = {
-        fullname: values.fullname,
-        email: values.email,
-        phoneNumber: values.phoneNumber,
-        instance: values.instance,
-        password: values.password,
-        Program: Program[Math.floor(Math.random() * Program.length)],
-        createdAt,
-      };
       openSet(false);
-      dataUsersSet([...dataUsers, newUser]);
+    },
+    onError: () => {
+      toast.error("Add Student is failed ", {
+        autoClose: 3000,
+      });
+      openSet(false);
+    },
+  });
+  function onSubmit(values) {
+    if (values.rePassword === values.password) {
+      const newData = {
+        name: values.name,
+        npm: values.npm,
+        password: values.password,
+      };
+      mutation.mutate(newData);
     } else {
-      openSet(true);
-      alert("password not match");
+      messageErrorSet("Password not match");
     }
   }
   return (
@@ -114,88 +90,39 @@ export default function Button_Add_Student({ dataUsersSet, dataUsers }) {
             <div className="flex gap-6 ">
               <FormField
                 control={form.control}
-                name="fullname"
+                name="name"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>fullname</FormLabel>
+                    <FormLabel>Name</FormLabel>
                     <FormControl>
                       <Input placeholder="Jhon" {...field} />
                     </FormControl>
-
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <FormField
                 control={form.control}
-                name="email"
+                name="npm"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>email</FormLabel>
+                    <FormLabel>NPM</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="jhondoe@gmail.com"
-                        {...field}
-                        type="email"
-                      />
+                      <Input placeholder="123456" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            <div className="flex  gap-6">
-              <FormField
-                control={form.control}
-                name="phoneNumber"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Phone Number</FormLabel>
-                    <FormControl>
-                      <Input placeholder="+62 0987324968" {...field} />
-                    </FormControl>
 
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="instance"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Instance</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="w-12"
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Instance" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {Instances.map((item, i) => (
-                          <SelectItem key={i} value={item}>
-                            {item}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
             <div className="flex gap-6 ">
               <FormField
                 control={form.control}
                 name="password"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>password</FormLabel>
+                    <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input placeholder="****" {...field} type="password" />
                     </FormControl>
@@ -218,17 +145,16 @@ export default function Button_Add_Student({ dataUsersSet, dataUsers }) {
                 )}
               />
             </div>
-            <DialogFooter>
-              <div className="flex justify-end">
-                <Button
-                  type="submit"
-                  size="sm"
-                  className="bg-red-500 hover:bg-red-700 text-white"
-                >
-                  Save
-                </Button>
-              </div>
-            </DialogFooter>
+            {messageError && <p>{messageError}</p>}
+            <div className="flex justify-end">
+              <Button
+                type="submit"
+                size="sm"
+                className="bg-red-500 hover:bg-red-700 text-white"
+              >
+                Save
+              </Button>
+            </div>
           </form>
         </Form>
       </DialogContent>
