@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -16,26 +16,21 @@ import {
 } from "@/components/ui/table";
 import { Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-import { SchemaFormAddUser } from "@/helper/SchemaZod";
 import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import { SortDataByTotalNilai } from "@/helper/Search_And_Sorting_Data_Mahasiswa";
 import TableCell_List_Nilai_Mahasiswa from "../Child_Component_Table/List_Nilai_Mahasiswa";
 import Thead_List_Pelajaran from "../Child_Component_Table/List_Pelajaran";
+import {
+  GetDataMahasiswaContext,
+  GetDataPelajaranContext,
+} from "@/utils/Context";
 
 export default function Button_Settings_Peringkat() {
   const [open, openSet] = useState(false);
+  const { GetDataPelajaranByContext } = useContext(GetDataPelajaranContext);
+  const { GetDataMahasiswaByContextSet } = useContext(GetDataMahasiswaContext);
   const cookies = Cookies.get("token");
-  const { data: theadPelajaran, isLoading } = useQuery({
-    queryKey: ["tablepelajaran"],
-    queryFn: async () => getDataPelajaran(cookies),
-    select: (data) => {
-      return data.data.sort((pelajaranA, pelajaranB) =>
-        pelajaranA.name.localeCompare(pelajaranB.name)
-      );
-    },
-  });
   const { data: dataMahasiswa } = useQuery({
     queryKey: ["tablemahasiswa"],
     queryFn: async () => await getDataMahasiswa(cookies),
@@ -43,7 +38,11 @@ export default function Button_Settings_Peringkat() {
       return SortDataByTotalNilai(data);
     },
   });
-
+  useEffect(() => {
+    if (dataMahasiswa.length !== 0) {
+      GetDataMahasiswaByContextSet(dataMahasiswa);
+    }
+  }, [dataMahasiswa]);
   return (
     <Dialog open={open} onOpenChange={openSet}>
       <DialogTrigger asChild>
@@ -64,11 +63,9 @@ export default function Button_Settings_Peringkat() {
               <TableRow className="bg-slate-300 text-white">
                 <TableHead className="font-semibold">No</TableHead>
                 <TableHead className="font-semibold">Name</TableHead>
-                {!isLoading &&
-                  theadPelajaran &&
-                  theadPelajaran.map((item, index) => (
-                    <Thead_List_Pelajaran key={index} item={item} />
-                  ))}
+                {GetDataPelajaranByContext.map((item, index) => (
+                  <Thead_List_Pelajaran key={index} item={item} />
+                ))}
                 <TableHead className="font-semibold">Total</TableHead>
               </TableRow>
             </TableHeader>

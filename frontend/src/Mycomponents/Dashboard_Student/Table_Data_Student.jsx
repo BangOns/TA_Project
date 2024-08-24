@@ -16,10 +16,13 @@ import Thead_List_Pelajaran from "./Child_Component_Table/List_Pelajaran";
 import TableCell_List_Nilai_Mahasiswa from "./Child_Component_Table/List_Nilai_Mahasiswa";
 import Button_Delete_Student from "./Child_Component_Table/Button_Delete_Student";
 import Paginate_Table from "./Child_Component_Table/Paginate_Table";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { GetDataPelajaranContext } from "@/utils/Context";
 
 export default function Table_Data_Student({ dataMahasiswa }) {
   const [DataAllMahasiswa, DataAllMahasiswaSet] = useState([]);
+  const { GetDataPelajaranByContextSet, GetDataPelajaranByContext } =
+    useContext(GetDataPelajaranContext);
   const cookies = Cookies.get("token");
   const { data: theadPelajaran, isLoading } = useQuery({
     queryKey: ["tablepelajaran"],
@@ -30,7 +33,11 @@ export default function Table_Data_Student({ dataMahasiswa }) {
       );
     },
   });
-
+  useEffect(() => {
+    if (!isLoading && theadPelajaran) {
+      GetDataPelajaranByContextSet(theadPelajaran);
+    }
+  }, [theadPelajaran, isLoading]);
   return (
     <Table>
       <TableCaption>
@@ -43,11 +50,9 @@ export default function Table_Data_Student({ dataMahasiswa }) {
         <TableRow className="bg-slate-300 text-white">
           <TableHead className="font-semibold">NPM</TableHead>
           <TableHead className="font-semibold">Name</TableHead>
-          {!isLoading &&
-            theadPelajaran &&
-            theadPelajaran.map((item, index) => (
-              <Thead_List_Pelajaran key={index} item={item} />
-            ))}
+          {GetDataPelajaranByContext.map((item, index) => (
+            <Thead_List_Pelajaran key={index} item={item} />
+          ))}
           <TableHead className="font-semibold text-center">Action</TableHead>
         </TableRow>
       </TableHeader>

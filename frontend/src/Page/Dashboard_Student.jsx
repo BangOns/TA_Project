@@ -15,6 +15,7 @@ import {
   GetDataMahasiswaBySortAndSearch,
 } from "@/helper/Search_And_Sorting_Data_Mahasiswa";
 import { SearchContext, SortContext } from "@/utils/Context";
+import Button_Add_Pelajaran from "@/Mycomponents/Dashboard_Student/Button_Add_Pelajaran";
 export default function Dashboard_Student() {
   const cookies = Cookies.get("token");
   const { sortCategory } = useContext(SortContext);
@@ -55,6 +56,7 @@ export default function Dashboard_Student() {
             <section className="flex justify-between mt-[27px] max-sm:gap-4 items-center">
               <div className="flex gap-3 items-center max-sm:flex-col max-sm:items-start">
                 <Button_Add_Student />
+                <Button_Add_Pelajaran />
               </div>
               <div className="flex max-md:items-end max-md:flex-col-reverse justify-end gap-4 items-stretch">
                 <Search_and_Settings />

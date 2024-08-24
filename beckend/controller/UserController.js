@@ -22,7 +22,7 @@ async function CreateUser(req, res) {
       if (req.body.npm.startsWith("111")) {
         newUser = { ...req.body, role: "admin" };
       } else {
-        newUser = { ...req.body, role: "user" };
+        newUser = { ...req.body, role: "user", rata_rata_nilai: 0 };
       }
       const getNewUser = await User.create(newUser);
       const responseNewUser =

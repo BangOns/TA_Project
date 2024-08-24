@@ -41,3 +41,14 @@ export async function EditDataNilaiPelajaran(data) {
     return error;
   }
 }
+
+export async function AddDataPelajaran(dataName) {
+  try {
+    const responseAddPelajaran = await instance.post(`/pelajaran`, {
+      ...dataName,
+    });
+    return responseAddPelajaran;
+  } catch (error) {
+    return error;
+  }
+}

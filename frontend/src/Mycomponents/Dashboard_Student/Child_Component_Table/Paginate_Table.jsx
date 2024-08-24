@@ -11,7 +11,6 @@ export default function Paginate_Table({ dataMahasiswa, dataMahasiswaSet }) {
   const limitPerPage = 2;
   const totalPages = Math.ceil(dataMahasiswa.length / limitPerPage);
   const listPages = Array.from({ length: totalPages }, (_, index) => index + 1);
-
   function getPaginatedData() {
     const startIndex = (currentPage - 1) * limitPerPage;
     const endIndex = startIndex + limitPerPage;
@@ -27,6 +26,7 @@ export default function Paginate_Table({ dataMahasiswa, dataMahasiswaSet }) {
           <Button
             className={" border font-semibold text-black hover:bg-red-300 "}
             variant="outline"
+            disabled={currentPage <= 1 ? true : false}
             onClick={() =>
               setCurrentPage(
                 currentPage >= totalPages ? currentPage - 1 : currentPage
@@ -63,6 +63,7 @@ export default function Paginate_Table({ dataMahasiswa, dataMahasiswaSet }) {
           <Button
             className={" border font-semibold text-black hover:bg-red-300 "}
             variant="outline"
+            disabled={currentPage >= totalPages - 1 ? true : false}
             onClick={() =>
               setCurrentPage(
                 currentPage < totalPages ? currentPage + 1 : totalPages

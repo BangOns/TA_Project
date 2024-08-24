@@ -21,6 +21,12 @@ export const SchemaFormNilai = z.object({
   idPelajaran: z.string().nonempty({ message: "Input be correctly" }),
 });
 
+export const SchemaFormAddPelajaran = z.object({
+  name: z.string().min(1, {
+    message: "name must be at least 1 characters.",
+  }),
+});
+
 export const SchemaFormAddUser = z.object({
   name: z.string().min(2, {
     message: "fullname must be at least 2 characters.",
