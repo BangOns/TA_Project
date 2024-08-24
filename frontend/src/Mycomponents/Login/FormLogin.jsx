@@ -141,7 +141,7 @@ export default function FormLogin() {
               size="sm"
               className="bg-red-500 w-full hover:bg-red-700 text-white text-sm sm:text-base shadow-lg font-semibold"
             >
-              Save
+              Login
             </Button>
           </div>
         </form>

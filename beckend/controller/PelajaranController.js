@@ -86,10 +86,24 @@ async function UpdateUserDataPelajaran(req, res) {
         new: true,
       }
     );
-    const response = await User.findOne({
+    const user = await User.findOne({
       npm: npm,
-      "data_pelajaran._id": idpelajaran,
     }).exec();
+    const totalNilai = user.data_pelajaran.reduce((total, pelajaran) => {
+      return total + pelajaran.Total_nilai;
+    }, 0);
+    const rataRataNilaiKesuluruhan = totalNilai / user.data_pelajaran.length;
+    const formatted_Hasil_RataRata_Kesuluruhan = Number.isInteger(
+      rataRataNilaiKesuluruhan
+    )
+      ? rataRataNilaiKesuluruhan.toString()
+      : rataRataNilaiKesuluruhan.toFixed(2);
+    await User.updateOne(
+      { npm: npm },
+      { $set: { rata_rata_nilai: formatted_Hasil_RataRata_Kesuluruhan } },
+      { new: true }
+    );
+    const response = await User.findOne({ npm: npm }).exec();
     Response(200, response, "Success update pelajaran user by name", res);
   } catch (error) {
     Response(400, error, "failed update pelajaran user by name", res);

@@ -9,12 +9,12 @@ import { Button } from "@/components/ui/button";
 import Loading_Table from "@/Mycomponents/LoadingComponent/TableLoading";
 import { SearchX } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { SearchContext, SortContext } from "@/Mycomponents/Container_Dashboard";
 import {
   GetDataMahasiswaBySearch,
   GetDataMahasiswaBySort,
   GetDataMahasiswaBySortAndSearch,
 } from "@/helper/Search_And_Sorting_Data_Mahasiswa";
+import { SearchContext, SortContext } from "@/utils/Context";
 export default function Dashboard_Student() {
   const cookies = Cookies.get("token");
   const { sortCategory } = useContext(SortContext);

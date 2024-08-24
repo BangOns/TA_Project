@@ -7,17 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-
-import ImagesImport from "@/utils/ImagesImport";
 
 import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
@@ -26,8 +15,11 @@ import Button_Dropdown_Edit from "./Child_Component_Table/Button_Dropdown_Edit";
 import Thead_List_Pelajaran from "./Child_Component_Table/List_Pelajaran";
 import TableCell_List_Nilai_Mahasiswa from "./Child_Component_Table/List_Nilai_Mahasiswa";
 import Button_Delete_Student from "./Child_Component_Table/Button_Delete_Student";
+import Paginate_Table from "./Child_Component_Table/Paginate_Table";
+import { useEffect, useState } from "react";
 
 export default function Table_Data_Student({ dataMahasiswa }) {
+  const [DataAllMahasiswa, DataAllMahasiswaSet] = useState([]);
   const cookies = Cookies.get("token");
   const { data: theadPelajaran, isLoading } = useQuery({
     queryKey: ["tablepelajaran"],
@@ -42,48 +34,15 @@ export default function Table_Data_Student({ dataMahasiswa }) {
   return (
     <Table>
       <TableCaption>
-        <Pagination>
-          <PaginationContent className="px-2">
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                className={" border font-semibold text-black"}
-              />
-            </PaginationItem>
-            <div className="flex justify-center gap-2">
-              <PaginationItem>
-                <PaginationLink
-                  href="#"
-                  isActive={true}
-                  className={"active:bg-red-500"}
-                >
-                  1
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">2</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">3</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-            </div>
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                className={" border font-semibold text-black"}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+        <Paginate_Table
+          dataMahasiswa={dataMahasiswa}
+          dataMahasiswaSet={DataAllMahasiswaSet}
+        />
       </TableCaption>
       <TableHeader>
         <TableRow className="bg-slate-300 text-white">
-          <TableHead className="font-semibold">Profil</TableHead>
-          <TableHead className="font-semibold">Name</TableHead>
           <TableHead className="font-semibold">NPM</TableHead>
+          <TableHead className="font-semibold">Name</TableHead>
           {!isLoading &&
             theadPelajaran &&
             theadPelajaran.map((item, index) => (
@@ -93,24 +52,16 @@ export default function Table_Data_Student({ dataMahasiswa }) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {dataMahasiswa.length !== 0 ? (
-          dataMahasiswa.map((user, index) => (
+        {DataAllMahasiswa.length !== 0 ? (
+          DataAllMahasiswa.map((user, index) => (
             <TableRow key={index}>
               <TableCell>
-                <figure>
-                  <img
-                    src={ImagesImport.ProfileTable}
-                    alt=""
-                    className="rounded-full w-10 h-10"
-                  />
-                </figure>
+                <p className="text-sm font-bold">{user.npm.substring(0, 4)}</p>
               </TableCell>
               <TableCell>
                 <p className="text-sm font-bold">{user.name}</p>
               </TableCell>
-              <TableCell>
-                <p className="text-sm font-bold">{user.npm}</p>
-              </TableCell>
+
               <TableCell_List_Nilai_Mahasiswa user={user} />
               <TableCell>
                 <div className="flex justify-center">

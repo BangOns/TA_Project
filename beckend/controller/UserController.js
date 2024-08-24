@@ -54,6 +54,7 @@ async function LoginUserOrAdminByNPM(req, res) {
       const npmValue = req.body.npm;
       const user = await User.findOne({ npm: npmValue });
       const dataInToken = {
+        id: user._id,
         name: user.name,
         role: user.role,
       };

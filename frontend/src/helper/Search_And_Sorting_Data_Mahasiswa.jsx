@@ -35,3 +35,19 @@ export function GetDataMahasiswaBySearch(data, search) {
   });
   return filterData;
 }
+
+export function SortDataByTotalNilai(data) {
+  return data.sort((userA, userB) => {
+    const TotalNilaiA =
+      userA.data_pelajaran.reduce(
+        (acc, nilai) => acc + parseInt(nilai.Total_nilai),
+        0
+      ) || 0;
+    const TotalNilaiB =
+      userB.data_pelajaran.reduce(
+        (acc, nilai) => acc + parseInt(nilai.Total_nilai),
+        0
+      ) || 0;
+    return TotalNilaiB - TotalNilaiA;
+  });
+}

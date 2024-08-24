@@ -19,12 +19,12 @@ export default function Button_Logout() {
   });
   return (
     <Button
-      className="border-0 w-full gap-3 group hover:bg-red-500 justify-start"
+      className="border-0 w-full gap-3  hover:text-white hover:bg-red-500 justify-start"
       variant="outline"
       onClick={() => mutation.mutate()}
     >
-      <LogOut className="group-hover:text-white" />
-      <p className="group-hover:text-white">Logout</p>
+      <LogOut />
+      Logout
     </Button>
   );
 }

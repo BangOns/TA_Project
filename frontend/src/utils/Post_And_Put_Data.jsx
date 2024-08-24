@@ -11,13 +11,14 @@ export async function AddDataMahasiswa(data) {
   }
 }
 
-export async function EditDataMahasiswa(data) {
-  const { id, ...updateDataMahasiswa } = data;
+export async function EditDataUser(data) {
+  const { id, ...updateDataUser } = data;
+
   try {
     const responseEditMahasiswaByIdMahasiswa = await instance.put(
       `/users/${id}`,
       {
-        ...updateDataMahasiswa,
+        ...updateDataUser,
       }
     );
     return responseEditMahasiswaByIdMahasiswa;

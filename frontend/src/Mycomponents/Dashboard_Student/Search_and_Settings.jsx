@@ -5,9 +5,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { FileSpreadsheet, Search, Settings, Trophy } from "lucide-react";
+import { SearchContext } from "@/utils/Context";
+import { FileSpreadsheet, Search, Settings } from "lucide-react";
 import React, { useContext } from "react";
-import { SearchContext } from "../Container_Dashboard";
+import Button_Settings_Peringkat from "./Child_Component_Settings/Button_Settings_Peringkat";
 
 export default function Search_and_Settings() {
   const { searchDataSet } = useContext(SearchContext);
@@ -43,12 +44,7 @@ export default function Search_and_Settings() {
                 <p>Export to excel</p>
               </div>
             </Button>
-            <Button className="w-full border-0 justify-start" variant="outline">
-              <div className="flex gap-3">
-                <Trophy width={20} height={20} />
-                <p>Peringkat pertama</p>
-              </div>
-            </Button>
+            <Button_Settings_Peringkat />
           </div>
         </PopoverContent>
       </Popover>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -18,33 +18,30 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import Cookies from "js-cookie";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getDataMahasiswaById } from "@/utils/GetData";
-import { EditDataUser } from "@/utils/Post_And_Put_Data";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { SchemaFormEditUser } from "@/helper/SchemaZod";
+import { UserPen } from "lucide-react";
+import { GetIdContext } from "@/utils/Context";
+import { EditDataUser } from "@/utils/Post_And_Put_Data";
 const formSchema = SchemaFormEditUser;
-export default function Button_Edit_Student({ dataUserById }) {
+export default function Button_Edit_Admin() {
+  const { getDataById } = useContext(GetIdContext);
   const [open, openSet] = useState(false);
   const [messageError, messageErrorSet] = useState("");
   const queryClient = useQueryClient();
-  const cookies = Cookies.get("token");
-  const { data } = useQuery({
-    queryKey: ["mahasiswa"],
-    queryFn: async () => await getDataMahasiswaById(dataUserById, cookies),
-  });
+
   const mutation = useMutation({
     mutationFn: EditDataUser,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tablemahasiswa"] });
-      toast.success("Edit Student is Succcess ", {
+      queryClient.invalidateQueries({ queryKey: ["admin"] });
+      toast.success("Edit Data is Succcess ", {
         autoClose: 3000,
       });
       openSet(false);
     },
     onError: () => {
-      toast.error("Add Student is failed ", {
+      toast.error("Add Data is failed ", {
         autoClose: 3000,
       });
       openSet(false);
@@ -62,41 +59,44 @@ export default function Button_Edit_Student({ dataUserById }) {
   });
 
   async function onSubmit(values) {
-    let newDataMahasiswa = null;
-    const olderPassword = await data.data.data.password;
-    const idUser = await data.data.data._id;
+    let newDataAdmin = null;
+    const olderPassword = await getDataById.password;
+    const idUser = await getDataById._id;
     if (values.oldPassword !== olderPassword) {
       messageErrorSet("Password lama salah");
     } else if (
       values.newPassword.length !== 0 ||
       values.oldPassword === olderPassword
     ) {
-      newDataMahasiswa = {
+      newDataAdmin = {
         id: idUser,
         name: values.name,
         npm: values.npm,
         password: values.newPassword || olderPassword,
       };
-      mutation.mutate(newDataMahasiswa);
+      mutation.mutate(newDataAdmin);
     } else {
       messageErrorSet("Password lama salah");
     }
   }
   async function GetValueEditMahasiswa(data) {
     if (data) {
-      const getDataPelajaranById = await data.data.data;
-      form.setValue("name", getDataPelajaranById.name);
-      form.setValue("npm", getDataPelajaranById.npm);
-      form.setValue("oldPassword", getDataPelajaranById.password);
+      form.setValue("name", data.name);
+      form.setValue("npm", data.npm);
+      form.setValue("oldPassword", data.password);
     }
   }
   useEffect(() => {
-    GetValueEditMahasiswa(data);
-  }, [data]);
+    GetValueEditMahasiswa(getDataById);
+  }, [getDataById]);
   return (
     <Dialog open={open} onOpenChange={openSet}>
       <DialogTrigger asChild>
-        <Button className="bg-transparent group hover:bg-amber-500 w-full text-black justify-start hover:text-white py-0">
+        <Button
+          className="border-0 hover:text-white items-center w-full gap-3 group hover:bg-sky-500 justify-start"
+          variant="outline"
+        >
+          <UserPen />
           Edit Profile
         </Button>
       </DialogTrigger>
@@ -133,9 +133,7 @@ export default function Button_Edit_Student({ dataUserById }) {
                       <Input
                         placeholder="jhondoe@gmail.com"
                         {...field}
-                        disabled={
-                          data.data.data.npm.length >= 12 ? true : false
-                        }
+                        disabled={getDataById.npm.length >= 12 ? true : false}
                       />
                     </FormControl>
                     <FormMessage />

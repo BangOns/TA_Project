@@ -97,8 +97,6 @@ export default function Button_Edit_Nilai({ dataUserById }) {
     }
   }
 
-  useEffect(() => {}, [data]);
-
   return (
     <Dialog open={open} onOpenChange={openSet}>
       <DialogTrigger asChild>
