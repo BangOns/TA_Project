@@ -63,7 +63,7 @@ export default function Paginate_Table({ dataMahasiswa, dataMahasiswaSet }) {
           <Button
             className={" border font-semibold text-black hover:bg-red-300 "}
             variant="outline"
-            disabled={currentPage >= totalPages - 1 ? true : false}
+            disabled={currentPage >= totalPages ? true : false}
             onClick={() =>
               setCurrentPage(
                 currentPage < totalPages ? currentPage + 1 : totalPages
