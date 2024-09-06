@@ -14,12 +14,16 @@ const {
   ValidateCreateUser,
   ValidateUpdateUser,
 } = require("../utils/ValidateUser");
-const { ValidatePelajaran } = require("../utils/ValidatePelajaran");
+const {
+  ValidatePelajaran,
+  ValidateEditPelajaran,
+} = require("../utils/ValidatePelajaran");
 const {
   AddPelajaran,
   DeletePelajaran,
   UpdateUserDataPelajaran,
   GetPelajaran,
+  EditPelajaran,
 } = require("../controller/PelajaranController");
 const approuter = require("express").Router();
 
@@ -38,6 +42,11 @@ approuter.put(
 approuter.get("/api/pelajaran", cookiesAuthJwt, GetPelajaran);
 approuter.post("/api/pelajaran", ValidatePelajaran(), AddPelajaran);
 approuter.put("/api/pelajaran/:npm/:idpelajaran", UpdateUserDataPelajaran);
+approuter.put(
+  "/api/pelajaran/:name",
+  [ValidateEditPelajaran(), ValidatePelajaran()],
+  EditPelajaran
+);
 approuter.delete("/api/pelajaran/:name", DeletePelajaran);
 
 module.exports = approuter;

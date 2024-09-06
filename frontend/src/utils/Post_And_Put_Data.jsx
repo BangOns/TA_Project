@@ -1,6 +1,6 @@
 import { instance } from "@/axios/axios";
 
-export async function AddDataMahasiswa(data) {
+export async function AddDataMahasiswaAndAdmin(data) {
   try {
     const responseAddMahasiswa = await instance.post("/users", {
       ...data,
@@ -38,6 +38,8 @@ export async function EditDataNilaiPelajaran(data) {
     );
     return responseEditPelajaranByIdPelajaran;
   } catch (error) {
+    console.log(error);
+
     return error;
   }
 }
@@ -47,6 +49,20 @@ export async function AddDataPelajaran(dataName) {
     const responseAddPelajaran = await instance.post(`/pelajaran`, {
       ...dataName,
     });
+    return responseAddPelajaran;
+  } catch (error) {
+    return error;
+  }
+}
+export async function EditDataPelajaran(dataName) {
+  const { oldNamePelajaran, newNamePelajaran } = dataName;
+  try {
+    const responseAddPelajaran = await instance.put(
+      `/pelajaran/${oldNamePelajaran}`,
+      {
+        name: newNamePelajaran,
+      }
+    );
     return responseAddPelajaran;
   } catch (error) {
     return error;

@@ -1,5 +1,6 @@
 import { getDataToCharts } from "@/utils/GetData";
 import Cookies from "js-cookie";
+import { SearchX } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 
@@ -49,7 +50,14 @@ export default function Chart_Dashboard() {
           }}
         />
       ) : (
-        <></>
+        <section className="w-full h-full grid place-items-center">
+          <div className="flex items-center gap-2 md:gap-4">
+            <SearchX className="text-base  md:text-3xl" />
+            <h1 className="text-base lg:text-2xl font-bold ">
+              Data Mahasiswa Not Found
+            </h1>
+          </div>
+        </section>
       )}
     </div>
   );

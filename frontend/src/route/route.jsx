@@ -2,8 +2,8 @@ import Layout from "@/Mycomponents/Container_Dashboard";
 import Dashboard_Admin from "@/Page/Dashboard_Admin";
 import Dashboard_Student from "@/Page/Dashboard_Student";
 import Login from "@/Page/Login";
+import Register from "@/Page/Register";
 import Cookies from "js-cookie";
-import { useCookies } from "react-cookie";
 import {
   createBrowserRouter,
   Navigate,
@@ -20,6 +20,10 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
   },
 ]);
 

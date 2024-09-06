@@ -6,11 +6,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { SearchContext } from "@/utils/Context";
-import { FileSpreadsheet, Search, Settings } from "lucide-react";
+import { Search, Settings } from "lucide-react";
 import React, { useContext } from "react";
 import Button_Settings_Peringkat from "./Child_Component_Settings/Button_Settings_Peringkat";
-import Button_Ecport_Data_to_Excel from "./Child_Component_Settings/Button_Export_Data_to_Excel";
 import Button_Export_Data_to_Excel from "./Child_Component_Settings/Button_Export_Data_to_Excel";
+import Button_Edit_Pelajaran from "./Child_Component_Settings/Button_Edit_Pelajaran";
+import Button_Delete_Pelajaran from "./Child_Component_Settings/Button_Delete_Pelajaran";
 
 export default function Search_and_Settings() {
   const { searchDataSet } = useContext(SearchContext);
@@ -42,6 +43,8 @@ export default function Search_and_Settings() {
           <div className=" px-0 space-y-2">
             <Button_Export_Data_to_Excel />
             <Button_Settings_Peringkat />
+            <Button_Edit_Pelajaran />
+            <Button_Delete_Pelajaran />
           </div>
         </PopoverContent>
       </Popover>

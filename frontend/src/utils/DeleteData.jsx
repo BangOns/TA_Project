@@ -13,6 +13,16 @@ export async function DeleteDataMahasiswa({ id, token }) {
   }
 }
 
+export async function DeleteDataPelajaran({ name }) {
+  try {
+    await instance.delete(`/pelajaran/${name}`);
+  } catch (error) {
+    console.log(error);
+
+    return error;
+  }
+}
+
 export async function LogoutUserOrAdmin() {
   try {
     await instance.delete("/logout");

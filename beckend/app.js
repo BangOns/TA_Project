@@ -7,7 +7,6 @@ require("dotenv").config();
 require("./connect/connectMongoDb");
 const app = express();
 const PORT = process.env.PORT || 8000;
-
 app.use(cookieParser());
 app.use(express.json());
 app.use(

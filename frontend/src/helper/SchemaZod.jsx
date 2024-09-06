@@ -1,5 +1,15 @@
 import z from "zod";
 
+export const SchemaLogin = z.object({
+  fullname: z.string().min(2, {
+    message: "fullname must be at least 2 characters.",
+  }),
+  npm: z.string().min(10, {
+    message: "Npm must be at least 10 characters.",
+  }),
+  password: z.string().min(1, { message: "Please enter a valid password." }),
+});
+
 export const SchemaFormNilai = z.object({
   nilai: z.coerce
     .number({
@@ -18,7 +28,9 @@ export const SchemaFormNilai = z.object({
     .lte(16, {
       message: "Kehadiran tidak boleh lebih dari 16",
     }),
-  idPelajaran: z.string().nonempty({ message: "Input be correctly" }),
+  idPelajaran: z.string().min(1, {
+    message: "Please select this field",
+  }),
 });
 
 export const SchemaFormAddPelajaran = z.object({
@@ -47,7 +59,29 @@ export const SchemaFormAddUser = z.object({
     message: "Please enter a valid password length 6 characters.",
   }),
 });
+export const SchemaFormAddAdmin = z.object({
+  name: z.string().min(2, {
+    message: "fullname must be at least 2 characters.",
+  }),
+  npm: z
+    .string()
+    .min(12, {
+      message: "fullname must be at least 12 characters.",
+    })
+    .max(12, {
+      message: "fullname must be at least 12 characters.",
+    })
+    .regex(/^111/, {
+      message: "NPM Admin must be start with 111",
+    }),
 
+  password: z.string().min(6, {
+    message: "Please enter a valid password length 6 characters.",
+  }),
+  rePassword: z.string().min(6, {
+    message: "Please enter a valid password length 6 characters.",
+  }),
+});
 export const SchemaFormEditUser = z.object({
   name: z.string().min(2, {
     message: "fullname must be at least 2 characters.",
@@ -69,4 +103,17 @@ export const SchemaFormEditUser = z.object({
       message: "Please enter a valid password.",
     })
     .optional(),
+});
+export const SchemaFormEditPelajaran = z.object({
+  oldNamePelajaran: z.string().min(1, {
+    message: "Please select this field",
+  }),
+  newNamePelajaran: z.string().min(1, {
+    message: "fullname must be at least 2 characters.",
+  }),
+});
+export const SchemaFormDeletePelajaran = z.object({
+  name: z.string().min(1, {
+    message: "Please input this field",
+  }),
 });

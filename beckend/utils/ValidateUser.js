@@ -6,7 +6,11 @@ function ValidateUserLogin() {
     if (!user) {
       throw new Error("user not found");
     } else {
-      true;
+      if (user.role !== "admin") {
+        throw new Error("user not admin");
+      } else {
+        true;
+      }
     }
   });
 }

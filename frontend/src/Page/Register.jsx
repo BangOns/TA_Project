@@ -1,7 +1,8 @@
 import FormLogin from "@/Mycomponents/Login/FormLogin";
+import FormRegister from "@/Mycomponents/Register/FormRegister";
 import React from "react";
 
-export default function Login() {
+export default function Register() {
   return (
     <main className="h-screen w-screen bg-slate-300/80">
       <article className="w-full h-full grid place-items-center max-md:px-3">
@@ -11,16 +12,14 @@ export default function Login() {
               R
             </h1>
             <section className="mt-2 sm:mt-5">
-              <h2 className="text-xl sm:text-2xl font-semibold">
-                Welcome Back
-              </h2>
+              <h2 className="text-xl sm:text-2xl font-semibold">Welcome</h2>
               <p className="mt-1 max-sm:text-sm font-semibold text-slate-400">
-                Input youre account in here{" "}
+                Register youre account in here{" "}
               </p>
             </section>
           </header>
           <section className="w-full mt-5">
-            <FormLogin />
+            <FormRegister />
           </section>
         </section>
       </article>

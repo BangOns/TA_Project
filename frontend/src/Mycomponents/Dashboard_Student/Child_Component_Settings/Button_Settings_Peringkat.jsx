@@ -25,6 +25,7 @@ import {
   GetDataMahasiswaContext,
   GetDataPelajaranContext,
 } from "@/utils/Context";
+import { BgColorForPeringkat } from "@/helper/BgColor_For_Peringkat";
 
 export default function Button_Settings_Peringkat() {
   const [open, openSet] = useState(false);
@@ -72,7 +73,10 @@ export default function Button_Settings_Peringkat() {
             <TableBody>
               {dataMahasiswa.length !== 0 ? (
                 dataMahasiswa.map((user, index) => (
-                  <TableRow key={index} className="bg-yellow-200">
+                  <TableRow
+                    key={index}
+                    className={`${BgColorForPeringkat(index + 1)}`}
+                  >
                     <TableCell>
                       <p className="text-sm font-bold">{(index += 1)}</p>
                     </TableCell>

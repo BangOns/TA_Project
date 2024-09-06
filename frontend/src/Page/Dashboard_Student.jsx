@@ -55,8 +55,8 @@ export default function Dashboard_Student() {
             <h1 className="text-2xl font-bold">Data Student</h1>
             <section className="flex justify-between mt-[27px] max-sm:gap-4 items-center">
               <div className="flex gap-3 items-center max-sm:flex-col max-sm:items-start">
-                <Button_Add_Student />
                 <Button_Add_Pelajaran />
+                <Button_Add_Student />
               </div>
               <div className="flex max-md:items-end max-md:flex-col-reverse justify-end gap-4 items-stretch">
                 <Search_and_Settings />

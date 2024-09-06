@@ -17,25 +17,25 @@ async function AddPelajaran(req, res) {
     if (!resultValidate.isEmpty()) {
       return Response(400, resultValidate, "failed add pelajaran", res);
     } else {
-    }
-    const createNewPelajaran = await List_pelajaran.create(req.body);
-    await User.updateMany(
-      { role: "user" },
-      {
-        $push: {
-          data_pelajaran: {
-            _id: createNewPelajaran._id,
-            name: createNewPelajaran.name,
-            nilai: 0,
-            kehadiran: 0,
-            Total_nilai: 0,
+      const createNewPelajaran = await List_pelajaran.create(req.body);
+      await User.updateMany(
+        { role: "user" },
+        {
+          $push: {
+            data_pelajaran: {
+              _id: createNewPelajaran._id,
+              name: createNewPelajaran.name,
+              nilai: 0,
+              kehadiran: 0,
+              Total_nilai: 0,
+            },
           },
-        },
-      }
-    );
-    const response = await List_pelajaran.find();
-    const MessageResponse = "success add pelajaran";
-    Response(200, response, MessageResponse, res);
+        }
+      );
+      const response = await List_pelajaran.find();
+      const MessageResponse = "success add pelajaran";
+      Response(200, response, MessageResponse, res);
+    }
   } catch (error) {
     Response(400, error, "failed add pelajaran", res);
   }
@@ -109,10 +109,41 @@ async function UpdateUserDataPelajaran(req, res) {
     Response(400, error, "failed update pelajaran user by name", res);
   }
 }
-
+async function EditPelajaran(req, res) {
+  try {
+    const resultValidate = validationResult(req);
+    if (!resultValidate.isEmpty()) {
+      return Response(400, resultValidate, "failed edit pelajaran", res);
+    } else {
+      await List_pelajaran.findOneAndUpdate(
+        { name: req.params.name },
+        {
+          $set: {
+            name: req.body.name,
+          },
+        }
+      );
+      await User.updateMany(
+        { role: "user", "data_pelajaran.name": req.params.name },
+        {
+          $set: {
+            "data_pelajaran.$.name": req.body.name,
+          },
+        },
+        { new: true }
+      );
+      const response = await List_pelajaran.find();
+      const MessageResponse = "success edit pelajaran";
+      Response(200, response, MessageResponse, res);
+    }
+  } catch (error) {
+    Response(400, error, "failed add pelajaran", res);
+  }
+}
 module.exports = {
   GetPelajaran,
   AddPelajaran,
   DeletePelajaran,
+  EditPelajaran,
   UpdateUserDataPelajaran,
 };

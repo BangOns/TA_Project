@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -11,37 +10,53 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AtSign, KeyRound, ShieldCheck } from "lucide-react";
-import { instance } from "@/axios/axios";
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { SchemaLogin } from "@/helper/SchemaZod";
-const formSchema = SchemaLogin;
-export default function FormLogin() {
+import { useMutation } from "@tanstack/react-query";
+import { AddDataMahasiswaAndAdmin } from "@/utils/Post_And_Put_Data";
+import { SchemaFormAddAdmin } from "@/helper/SchemaZod";
+import { toast } from "react-toastify";
+const formSchema = SchemaFormAddAdmin;
+export default function FormRegister() {
   const [messageError, messageErrorSet] = useState("");
   const navigate = useNavigate();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullname: "",
+      name: "",
       npm: "",
       password: "",
+      rePassword: "",
     },
   });
-  async function onSubmit(values) {
-    try {
-      const { fullname, npm, password } = values;
-      const response = await instance.post("/login", {
-        fullname,
-        npm,
-        password,
+  const mutation = useMutation({
+    mutationFn: AddDataMahasiswaAndAdmin,
+    onSuccess: () => {
+      toast.success("Add Admin is success ", {
+        autoClose: 3000,
       });
-      if (response.status === 200) {
-        navigate("/admin");
-      }
-    } catch (error) {
-      messageErrorSet(error.response.data.data.errors[0].msg || error);
+      navigate("/");
+    },
+    onError: () => {
+      toast.error("Add Admin is failed ", {
+        autoClose: 3000,
+      });
+    },
+  });
+  function onSubmit(values) {
+    if (values.rePassword === values.password) {
+      const newData = {
+        name: values.name,
+        npm: values.npm,
+        password: values.password,
+      };
+      mutation.mutate(newData);
+    } else {
+      messageErrorSet("Password not match");
     }
   }
+
   return (
     <>
       <Form {...form}>
@@ -52,7 +67,7 @@ export default function FormLogin() {
           <div className="flex gap-6 ">
             <FormField
               control={form.control}
-              name="fullname"
+              name="name"
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormControl>
@@ -63,7 +78,7 @@ export default function FormLogin() {
                         className="text-slate-500"
                       />
                       <Input
-                        placeholder="Fullname"
+                        placeholder="Youre name"
                         {...field}
                         className="font-semibold max-sm:text-xs border-0 bg-white px-2"
                       />
@@ -73,8 +88,6 @@ export default function FormLogin() {
                 </FormItem>
               )}
             />
-          </div>
-          <div className="flex gap-6 ">
             <FormField
               control={form.control}
               name="npm"
@@ -125,6 +138,30 @@ export default function FormLogin() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="rePassword"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <div className="flex items-center px-3 border rounded-lg   bg-white">
+                      <KeyRound
+                        width={20}
+                        height={20}
+                        className="text-slate-500"
+                      />
+                      <Input
+                        placeholder="Re-Password"
+                        {...field}
+                        type="password"
+                        className="font-semibold max-sm:text-xs border-0 bg-white px-2"
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           {messageError && <p className="text-red-500">{messageError}</p>}
           <div className="w-full flex justify-center">
@@ -133,7 +170,7 @@ export default function FormLogin() {
               size="sm"
               className="bg-red-500 w-full hover:bg-red-700 text-white text-sm sm:text-base shadow-lg font-semibold"
             >
-              Login
+              Register
             </Button>
           </div>
         </form>

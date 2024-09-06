@@ -21,7 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AddDataMahasiswa } from "@/utils/Post_And_Put_Data";
+import { AddDataMahasiswaAndAdmin } from "@/utils/Post_And_Put_Data";
 import { toast } from "react-toastify";
 import { SchemaFormAddUser } from "@/helper/SchemaZod";
 
@@ -40,7 +40,7 @@ export default function Button_Add_Student() {
     },
   });
   const mutation = useMutation({
-    mutationFn: AddDataMahasiswa,
+    mutationFn: AddDataMahasiswaAndAdmin,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tablemahasiswa"] });
       toast.success("Add Student is success ", {

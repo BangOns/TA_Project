@@ -11,4 +11,14 @@ function ValidatePelajaran() {
     }
   });
 }
-module.exports = { ValidatePelajaran };
+function ValidateEditPelajaran() {
+  return body("name").custom(async (value, { req }) => {
+    const user = await List_pelajaran.findOne({ name: req.params.name });
+    if (!user) {
+      throw new Error("Pelajaran Not Found");
+    } else {
+      true;
+    }
+  });
+}
+module.exports = { ValidatePelajaran, ValidateEditPelajaran };
